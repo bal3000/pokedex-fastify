@@ -1,0 +1,79 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Pokemon {
+  id             Int     @id @default(autoincrement())
+  name           String
+  order          Int
+  weight         Int
+  height         Int
+  baseExperience Int
+  baseHappiness  Int
+  isDefault      Boolean @default(true)
+  captureRate    Int
+  evolutionChain Int?
+  evolvesFrom    Int?
+  evolvesTo      Int?
+  flavorText     String
+  genus          String
+  types          Type[]
+  moves          Move[]
+  stats          Stat[]
+}
+
+model Type {
+  id                Int         @id @default(autoincrement())
+  name              String
+  pokemon           Pokemon[]
+  doubleDamageFrom  Int[]
+  doubleDamageTo    Int[]
+  halfDamageFrom    Int[]
+  halfDamageTo      Int[]
+  noDamageFrom      Int[]
+  noDamageTo        Int[]
+  moveDamageClass   DamageClass @relation(fields: [moveDamageClassId], references: [id])
+  moveDamageClassId Int
+  Moves             Move[]
+}
+
+model DamageClass {
+  id    Int    @id @default(autoincrement())
+  name  String
+  Type  Type[]
+  Moves Move[]
+}
+
+model Move {
+  id            Int         @id @default(autoincrement())
+  name          String
+  type          Type        @relation(fields: [typeId], references: [id])
+  typeId        Int
+  power         Int
+  accuracy      Int
+  pp            Int
+  priority      Int
+  effect        String
+  shortEffect   String
+  damageClass   DamageClass @relation(fields: [damageClassId], references: [id])
+  damageClassId Int
+  effectChance  Int
+  flavorText    String
+  Pokemon       Pokemon[]
+}
+
+model Stat {
+  id       Int       @id @default(autoincrement())
+  name     String
+  effort   Int
+  baseStat Int
+  Pokemon  Pokemon[] @ignore
+}
