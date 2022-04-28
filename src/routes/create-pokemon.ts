@@ -1,5 +1,6 @@
 import { FastifyInstance, RouteShorthandOptions } from 'fastify';
 import { z } from 'zod';
+import zodToJsonSchema from 'zod-to-json-schema';
 
 import { PokemonDTO, pokemon } from '../models/pokemon';
 
@@ -9,9 +10,9 @@ type ResponseSchema = z.TypeOf<typeof response>;
 
 const routeOpts: RouteShorthandOptions = {
   schema: {
-    body: pokemon,
+    body: zodToJsonSchema(pokemon),
     response: {
-      201: response,
+      201: zodToJsonSchema(response),
     },
   },
 };
@@ -24,7 +25,7 @@ export default async function createPokemonRoute(server: FastifyInstance) {
       const pokemon = await server.prisma.pokemon.create({
         data: { ...request.body },
       });
-      return reply.code(201).send(1);
+      return reply.code(201).send(pokemon.id);
     }
   );
 }
