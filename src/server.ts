@@ -6,6 +6,7 @@ import createPokemonRoute from './routes/create-pokemon';
 export default function buildServer() {
   const server: FastifyInstance = Fastify({ logger: true });
 
+  // plugins - prisma, JWT
   server.register(prismaPlugin);
 
   // routes
